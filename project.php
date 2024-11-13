@@ -62,34 +62,45 @@ $result = $conn->query($sql);
                     <td><?= $row['bisnis_partner'] ?></td>
                     <td>
                         <div class="text-center">
-                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal<?= $row['id_demand'] ?>">
+                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#mainModal<?= $row['id_demand'] ?>">
                                 Selengkapnya
                             </button>
                         </div>
 
-                            <!-- Modal Detail -->
-                            <div class="modal fade" id="detailModal<?= $row['id_demand'] ?>" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="detailModalLabel">Detail Project</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <!-- Modal Utama yang berisi dua container modal di dalamnya -->
+                        <div class="modal fade" id="mainModal<?= $row['id_demand'] ?>" tabindex="-1" aria-labelledby="mainModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="mainModalLabel">Detail Project dan Demand</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body d-flex justify-content-between">
+                                        <!-- Container Modal Detail Proyek -->
+                                        <div class="modal-container me-3 p-3 border" style="width: 48%;">
+                                            <h5>Detail Proyek</h5>
+                                            <p><strong>Tujuan:</strong> <?= $row['tujuan'] ?></p>
+                                            <p><strong>Ruang Lingkup:</strong> <?= $row['ruang_lingkup'] ?></p>
+                                            <p><strong>Benefit:</strong> <?= $row['benefit'] ?></p>
+                                            <p><strong>Proyek Bisnis:</strong> <?= $row['proyek_bisnis'] ?></p>
                                         </div>
-                                        <div class="modal-body">
-                                            <p><strong>Tujuan :</strong> <?= $row['tujuan'] ?></p>
-                                            <p><strong>Ruang Lingkup :</strong> <?= $row['ruang_lingkup'] ?></p>
-                                            <p><strong>Benefit :</strong> <?= $row['benefit'] ?></p>
-                                            <p><strong>Proyek Bisnis :</strong> <?= $row['proyek_bisnis'] ?></p>
-                                            <p><strong>Bisnis Partner :</strong> <?= $row['bisnis_partner'] ?></p>
-                                            <p><strong>Estimasi Waktu :</strong> <?= $row['estimasi_waktu']." Hari" ?></p>
+
+                                        <!-- Container Modal Detail Demand -->
+                                        <div class="modal-container p-3 border" style="width: 48%;">
+                                            <h5>Detail Demand</h5>
+                                            <p><strong>Bisnis Partner:</strong> <?= $row['bisnis_partner'] ?></p>
+                                            <p><strong>Estimasi Waktu:</strong> <?= $row['estimasi_waktu'] ?> Hari</p>
+                                            <!-- Tambahkan informasi lainnya sesuai kebutuhan -->
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>
-                        </td>
+                        </div>
+                    </td>
+
                 </tr>
                 <?php endwhile; ?>
             </tbody>

@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<div class="container-add-demand">
+<div class="container-add-demand mt-3">
     <h1 class="text-center my-4">Add Demand</h1>
     <form method="POST" action="">
         
