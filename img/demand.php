@@ -6,6 +6,7 @@ include 'config.php';
 $sql = "SELECT * FROM demands";
 $result = $conn->query($sql);
 
+// Edit function
 // Fungsi untuk mengedit data
 if (isset($_POST['update'])) {
     $id = $_POST['id_demand'];
@@ -19,7 +20,7 @@ if (isset($_POST['update'])) {
     $request_by = $_POST['request_by'];
     $bisnis_proses_owner = $_POST['bisnis_proses_owner'];
     $bisnis_partner = $_POST['bisnis_partner'];
-    $status = isset($_POST['status']) ? $_POST['status'] : 'pending';
+    $status = $_POST['status'];
 
     // Update tabel demands
     $sql_update_demands = "UPDATE demands SET 
@@ -35,12 +36,24 @@ if (isset($_POST['update'])) {
         bisnis_partner='$bisnis_partner',
         status='$status'
         WHERE id_demand='$id'";
+    
+    $conn->query($sql_update_demands);
 
-    if ($conn->query($sql_update_demands) === TRUE) {
-        echo "Data berhasil diperbarui!";
-    } else {
-        echo "Error saat memperbarui data di demands: " . $conn->error;
-    }
+    // Update tabel charter
+    $sql_update_charter = "UPDATE charter SET 
+        nama='$nama', 
+        tanggal='$tanggal', 
+        tujuan='$tujuan', 
+        ruang_lingkup='$ruang_lingkup', 
+        benefit='$benefit', 
+        proyek_bisnis='$proyek_bisnis', 
+        estimasi_waktu='$estimasi_waktu', 
+        request_by='$request_by', 
+        bisnis_proses_owner='$bisnis_proses_owner',
+        bisnis_partner='$bisnis_partner'
+        WHERE id_demand='$id'";
+    
+    $conn->query($sql_update_charter);
 
     header("Location: demand.php");
     exit();
@@ -55,6 +68,10 @@ if (isset($_GET['id'])) {
     $sql_delete_demands = "DELETE FROM demands WHERE id_demand='$id'";
     $conn->query($sql_delete_demands);
 
+    // Hapus data dari tabel charter
+    $sql_delete_charter = "DELETE FROM charter WHERE id_demand='$id'";
+    $conn->query($sql_delete_charter);
+
     header("Location: demand.php");
     exit();
 }
@@ -64,8 +81,15 @@ if (isset($_GET['id'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <title>Tabel Demand - Portal Aplikasi</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1.1">
+    <title>Tabel Demand - Portal Aplikasi</title>
+
 </head>
+
 <body class="body-background">
 <div class="container mt-3">
     <h1 class="mb-4 text-start text-center">Data Demand</h1>
@@ -73,17 +97,17 @@ if (isset($_GET['id'])) {
     <a href="add_demand.php" class="btn btn-primary mb-3">Add Demand</a>
 
     <!-- Tabel dengan Bootstrap -->
-    <div class="card-body table-responsive p-4"> 
+    <div class="table-responsive"> 
         <table class="table table-bordered table-striped table-hover">
             <thead class="table-dark text-center">
                 <tr>
                     <th>No</th>
                     <th>ID Demand</th>
                     <th>Tanggal</th>
-                    <th>Nama Aplikasi</th>
+                    <th>Nama</th>
                     <th>Request By</th>
-                    <th>Bussiness Process Owner</th>
-                    <th>IT Bussiness Partnership</th>
+                    <th>Bisnis Proses Owner</th>
+                    <th>Bisnis Partner</th>
                     <th><Details></Details></th>
                     <th>Status</th>
                     <th>Action</th>
@@ -139,7 +163,7 @@ if (isset($_GET['id'])) {
                             <span class="btn btn-warning btn-sm text-center">Pending</span>
                         <?php endif; ?>
                     </td>
-                    <td class="no-wrap">
+                    <td class="text-center">
                         <!-- Tombol Edit -->
                         <button class="btn btn-sm btn-warning btn-action" data-bs-toggle="modal" data-bs-target="#editModal<?= $row['id_demand'] ?>">Edit</button>
                         <!-- Tombol Delete -->
@@ -160,7 +184,7 @@ if (isset($_GET['id'])) {
 
                                     <!-- Input Fields -->
                                     <div class="mb-3">
-                                        <label for="nama<?= $row['id_demand'] ?>" class="form-label">Nama Aplikasi</label>
+                                        <label for="nama<?= $row['id_demand'] ?>" class="form-label">Nama</label>
                                         <input type="text" class="form-control" id="nama<?= $row['id_demand'] ?>" name="nama" value="<?= $row['nama'] ?>" required>
                                     </div>
                                     <div class="mb-3">
@@ -192,11 +216,11 @@ if (isset($_GET['id'])) {
                                         <input type="text" class="form-control" id="request_by<?= $row['id_demand'] ?>" name="request_by" value="<?= $row['request_by'] ?>" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="bisnis_proses_owner<?= $row['id_demand'] ?>" class="form-label">Bussiness Process Owner</label>
+                                        <label for="bisnis_proses_owner<?= $row['id_demand'] ?>" class="form-label">Bisnis Proses Owner</label>
                                         <input type="text" class="form-control" id="bisnis_proses_owner<?= $row['id_demand'] ?>" name="bisnis_proses_owner" value="<?= $row['bisnis_proses_owner'] ?>" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="bisnis_partner<?= $row['id_demand'] ?>" class="form-label">Bussiness Partnership</label>
+                                        <label for="bisnis_partner<?= $row['id_demand'] ?>" class="form-label">Bisnis Partner</label>
                                         <input type="text" class="form-control" id="bisnis_partnerr<?= $row['id_demand'] ?>" name="bisnis_partner" value="<?= $row['bisnis_partner'] ?>" required>
                                     </div>
                                 </div>

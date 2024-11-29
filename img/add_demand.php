@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1.1">
     <title>Input Demand - Portal Aplikasi</title>
 </head>
 <body class="body-background">
@@ -27,15 +32,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql_insert_demands = "INSERT INTO demands (id_demand, tanggal, nama, tujuan, ruang_lingkup, benefit, proyek_bisnis, estimasi_waktu, request_by, bisnis_proses_owner,bisnis_partner, status) 
                            VALUES ('$id_demand', '$tanggal', '$nama', '$tujuan', '$ruang_lingkup', '$benefit', '$proyek_bisnis', '$estimasi_waktu', '$request_by', '$bisnis_proses_owner','$bisnis_partner','$status')";
 
-            if ($conn->query($sql_insert_demands) === TRUE) {
-                // Jika berhasil, arahkan ke halaman 'demand.php'
-                header("Location: demand.php");
-                exit(); // Hentikan eksekusi skrip setelah redirect
-            } else {
-                echo "Error saat menambahkan data ke demands: " . $conn->error;
-                }
-          
-            } 
+    if ($conn->query($sql_insert_demands) === TRUE) {
+        // Insert ke tabel charter
+        $sql_insert_charter = "INSERT INTO charter (id_demand, nama, tanggal, tujuan, ruang_lingkup, benefit, proyek_bisnis, estimasi_waktu, request_by, bisnis_proses_owner, bisnis_partner) 
+                               VALUES ('$id_demand', '$nama', '$tanggal', '$tujuan', '$ruang_lingkup', '$benefit', '$proyek_bisnis', '$estimasi_waktu', '$request_by', '$bisnis_proses_owner','$bisnis_partner')";
+        if ($conn->query($sql_insert_charter) === TRUE) {
+            header("Location: demand.php"); // Arahkan ke halaman 'demand.php' setelah data berhasil ditambahkan
+            exit();
+        } else {
+            echo "Error saat menambahkan data ke charter: " . $conn->error;
+        }
+    } else {
+        echo "Error saat menambahkan data ke demands: " . $conn->error;
+    }
+}
 ?>
 
 <div class="container-add-demand mt-3">
@@ -51,9 +61,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="text" class="form-control" id="id_demand" name="id_demand" maxlength="8" required placeholder="xx-xxx" oninput="formatIdDemand(this)">
                 </div>
                 <small class="form-text text-muted">Format: xx-xxx (contoh: D-12-345)</small>
-        </div>
-        <div class="col-md-4">
-                <label for="nama" class="form-label">Nama Aplikasi</label>
+            </div>
+            <div class="col-md-4">
+                <label for="nama" class="form-label">Nama</label>
                 <input type="text" class="form-control" id="nama" name="nama" required>
             </div>
             <div class="col-md-4">
@@ -104,17 +114,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Bisnis Proses Owner, Bisnis Partner -->
         <div class="row mb-3">
             <div class="col-md-6">
-                <label for="bisnis_proses_owner" class="form-label">Bussiness Process Owner</label>
+                <label for="bisnis_proses_owner" class="form-label">Bisnis Proses Owner</label>
                 <input type="text" class="form-control" id="bisnis_proses_owner" name="bisnis_proses_owner" required>
             </div>
             <div class="col-md-6">
-                <label for="bisnis_partner" class="form-label">Bussiness Partnership</label>
+                <label for="bisnis_partner" class="form-label">Bisnis Partner</label>
                 <input type="text" class="form-control" id="bisnis_partner" name="bisnis_partner" required>
             </div>
         </div>
         <div class="col text-center">
         <button type="submit" class="btn btn-primary">Add Demand</button>
-        <a href="demand.php" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 </div>
